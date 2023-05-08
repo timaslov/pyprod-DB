@@ -6,13 +6,14 @@ from rest_framework.decorators import action
 from ....dal import get_core_subjects
 from ....models import Article
 from ....serializers import ArticleTreeSerializer, ArticleSerializer
+from ....permissions import IsStaffOrReadOnly
 
 
 class ArticleViewSet(ModelViewSet):
     queryset = Article.objects.all().order_by("-created_at")
     serializer_class = ArticleSerializer
     lookup_field = "slug"
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsStaffOrReadOnly]
 
     @action(detail=False)
     def index(self, request):
