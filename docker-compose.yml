@@ -1,0 +1,63 @@
+version: "3.9"
+
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: ./docker_build/nginx/Dockerfile
+    ports:
+      - "8001:80"
+    extra_hosts:
+      - ${host_docker_internal:-host_docker_internal}:host-gateway
+
+  front:
+    container_name: front
+    build:
+      context: ./frontend
+      dockerfile: ../docker_build/front/Dockerfile
+    ports:
+      - "3000:3000"
+#    volumes:
+#      - ./frontend:/app
+#      - /app/.cache/frontend
+#      - /app/frontend/server/www/static_frontend
+#      - /app/node_modules
+    depends_on:
+      - nginx
+    env_file: .env
+    extra_hosts:
+      - ${host_docker_internal:-host_docker_internal}:host-gateway
+
+  postgres:
+    container_name: postgres
+    build: ./docker_build/postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=pyprod
+    restart: on-failure
+
+  back:
+    container_name: back
+    build:
+      context: .
+      dockerfile: ./docker_build/back/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/pyprod/
+    depends_on:
+      - postgres
+      - nginx
+    env_file: .env
+    extra_hosts:
+      - ${host_docker_internal:-host_docker_internal}:host-gateway
+    command: python manage.py runserver 0.0.0.0:8000
+
+volumes:
+  postgres_db:
