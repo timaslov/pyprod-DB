@@ -16,6 +16,9 @@ class ArticleViewSet(ModelViewSet):
     permission_classes = [IsStaffOrReadOnly]
     filterset_fields = ("author", "status")
 
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
     @action(detail=False)
     def index(self, request):
         core_subjects = get_core_subjects()
@@ -30,3 +33,6 @@ class CommentViewSet(ModelViewSet):
     queryset = Comment.objects.all().order_by("-created_on")
     serializer_class = CommentSerializer
     filterset_fields = ("article_id", )
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
