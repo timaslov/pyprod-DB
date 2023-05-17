@@ -3,15 +3,35 @@ import { Form, Field } from 'vee-validate';
 import * as Yup from 'yup';
 
 import { useAuthStore } from '@/stores/auth.store';
+import axios from "axios";
 const authStore = useAuthStore();
 
 const schema = Yup.object().shape({
   commentText: Yup.string().required('commentText is required')
 });
 
-function onSubmit(values, { setErrors }) {
+async function onSubmit(values, { setErrors }) {
+  let userEmail = authStore.user.email;
   console.log(values);
+  console.log(userEmail);
 
+  let response
+  let token = authStore.user.access
+  let body = {text: values.commentText, author: 1, article:1};
+  let config = {headers: { Authorization: `Bearer ${token}` }};
+
+  try {
+    response = await axios.post(
+        "http://localhost:8001/api/web/v1/comments/", body, config)
+  } catch(error)
+  {
+    switch (error.response.status){
+      case 401:
+        throw 'Ошибка 401'
+      default:
+        throw error.response.status
+    }
+  }
 }
 </script>
 

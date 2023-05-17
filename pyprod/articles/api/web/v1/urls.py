@@ -5,7 +5,8 @@ from django.urls import path, include
 from . import views
 
 router = routers.SimpleRouter()
-router.register("", views.ArticleViewSet, basename="article")
+router.register("articles", views.ArticleViewSet, basename="article")
+router.register("comments", views.CommentViewSet, basename="comment")
 
 
 urlpatterns = [

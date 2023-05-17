@@ -1,5 +1,6 @@
 <template>
   <div
+      v-if="commentIndex <= commentsQty"
       class="
       rounded-lg
       border-2
@@ -21,11 +22,11 @@
           text-lg
         "
       >
-        {{this.comment.userName}}
+        ID пользователя: {{this.comment.author}}
       </li>
 
       <li>
-        {{this.comment.date}}
+        {{this.comment.created_on.slice(0,10) + "   " + this.comment.created_on.slice(11,16)}}
       </li>
     </ul>
     <div
@@ -41,8 +42,12 @@
 <script>
 export default {
   name: "Comment",
+
   props: {
     comment: Object,
+    commentsQty: Number,
+    commentIndex: Number,
   },
+
 }
 </script>

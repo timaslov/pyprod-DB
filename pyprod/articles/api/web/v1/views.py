@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 
 from ....dal import get_core_subjects
-from ....models import Article
-from ....serializers import ArticleTreeSerializer, ArticleSerializer
+from ....models import Article, Comment
+from ....serializers import ArticleTreeSerializer, ArticleSerializer, CommentSerializer
 from ....permissions import IsStaffOrReadOnly
 
 
@@ -14,6 +14,7 @@ class ArticleViewSet(ModelViewSet):
     serializer_class = ArticleSerializer
     lookup_field = "slug"
     permission_classes = [IsStaffOrReadOnly]
+    filterset_fields = ("author", "status")
 
     @action(detail=False)
     def index(self, request):
@@ -23,3 +24,9 @@ class ArticleViewSet(ModelViewSet):
             result.append(ArticleTreeSerializer(core_subject).data)
 
         return Response(result)
+
+
+class CommentViewSet(ModelViewSet):
+    queryset = Comment.objects.all().order_by("-created_on")
+    serializer_class = CommentSerializer
+    filterset_fields = ("article_id", )

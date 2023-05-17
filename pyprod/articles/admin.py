@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Article
+from .models import Article, Comment
 
 
 @admin.register(Article)
@@ -16,7 +16,23 @@ class ArticleAdmin(admin.ModelAdmin):
         "parent",
         "content",
         "slug",
+        "author",
         "status",
         "created_at",
         "updated_at",
+    ]
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    search_fields = ("article", "author", "text", "created_on")
+    list_display = ("id", "article", "author", "text", "created_on") # видимость полей в админке
+    readonly_fields = [
+        "created_on",
+    ]
+    fields = [
+        "article",
+        "author",
+        "text",
+        "created_on"
     ]

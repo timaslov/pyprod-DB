@@ -10,3 +10,12 @@ class IsStaffOrReadOnly(permissions.BasePermission):
                 request.user.is_superuser
             )
         )
+
+
+# class IsAuthorized(permissions.BasePermission):
+#     def has_permission(self, request, view):
+#         return bool(
+#             request.method in permissions.SAFE_METHODS or
+#             request.user
+#         )
+

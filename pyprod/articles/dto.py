@@ -24,4 +24,4 @@ class CommentDTO:
     article_id: int
     author_id: int
     id: int | None = None
-    created_at: datetime | None = None
+    created_on: datetime | None = None
