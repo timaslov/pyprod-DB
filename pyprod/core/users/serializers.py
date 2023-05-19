@@ -13,8 +13,13 @@ class UserSerializer(serializers.ModelSerializer):
             "username",
             "email",
             "is_staff",
+            "is_superuser",
         )
-        read_only_fields = ("id",)
+        read_only_fields = (
+            "id",
+            "is_staff",
+            "is_superuser",
+        )
 
 
 class UserRegisterSerializer(serializers.Serializer):
@@ -23,3 +28,8 @@ class UserRegisterSerializer(serializers.Serializer):
     username = serializers.CharField(allow_blank=False, max_length=25)
     email = serializers.EmailField(allow_blank=False, max_length=255)
     password = serializers.CharField(allow_blank=False, min_length=5)
+
+
+class GiveStaffPermissionsSerializer(serializers.Serializer):
+    email = serializers.EmailField(allow_blank=False, max_length=255)
+    is_staff = serializers.BooleanField()

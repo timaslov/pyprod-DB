@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 
 from ....dal import get_core_subjects
+from ....const import ArticleStatus
 from ....models import Article, Comment
 from ....serializers import ArticleTreeSerializer, ArticleSerializer, CommentSerializer
 from ....permissions import IsStaffOrReadOnly
@@ -16,7 +17,8 @@ class ArticleViewSet(ModelViewSet):
     filterset_fields = ("author", "status")
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        status = ArticleStatus.PUBLISHED if self.request.user.is_superuser else ArticleStatus.DRAFT
+        serializer.save(author=self.request.user, status=status)
 
     @action(detail=False)
     def index(self, request):

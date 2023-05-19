@@ -21,3 +21,8 @@ def register_new_user(
     )
 
     return user
+
+
+def set_user_permission_level(email: str, is_staff: bool) -> bool:
+    result = User.objects.filter(email=email).update(is_staff=is_staff)
+    return bool(result)
