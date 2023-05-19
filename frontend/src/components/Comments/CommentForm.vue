@@ -10,29 +10,7 @@ const schema = Yup.object().shape({
   commentText: Yup.string().required('commentText is required')
 });
 
-async function onSubmit(values, { setErrors }) {
-  let userEmail = authStore.user.email;
-  console.log(values);
-  console.log(userEmail);
 
-  let response
-  let token = authStore.user.access
-  let body = {text: values.commentText, author: 1, article:1};
-  let config = {headers: { Authorization: `Bearer ${token}` }};
-
-  try {
-    response = await axios.post(
-        "http://localhost:8001/api/web/v1/comments/", body, config)
-  } catch(error)
-  {
-    switch (error.response.status){
-      case 401:
-        throw 'Ошибка 401'
-      default:
-        throw error.response.status
-    }
-  }
-}
 </script>
 
 <template>
@@ -78,8 +56,40 @@ async function onSubmit(values, { setErrors }) {
 </template>
 
 <script>
+import axios from "axios";
+import { useAuthStore } from '@/stores/auth.store';
 export default {
-  name: "CommentForm"
+  name: "CommentForm",
+
+  props: {
+    article: Object,
+  },
+
+  methods: {
+    async onSubmit(values, {setErrors}) {
+      const authStore = useAuthStore();
+
+      let response
+      let token = authStore.user.access
+      let body = {text: values.commentText, article: this.article.id};
+      let config = {headers: {Authorization: `Bearer ${token}`}};
+
+      console.log(token);
+      console.log(body);
+
+      try {
+        response = await axios.post(
+            "http://localhost:8001/api/web/v1/comments/", body, config)
+      } catch (error) {
+        switch (error.response.status) {
+          case 401:
+            throw 'Ошибка 401'
+          default:
+            throw error.response.status
+        }
+      }
+    }
+  }
 }
 </script>
 

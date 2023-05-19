@@ -24,7 +24,7 @@ export const useAuthStore = defineStore({
                         throw error.response.status
                 }
             }
-
+            console.log(response)
             response.data.email = email;
             this.user = response.data;
             localStorage.setItem('user', JSON.stringify(response.data));

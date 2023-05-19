@@ -169,6 +169,7 @@ export default {
 
   async created() {
     await this.fetchArticleTree(this.urlArticleTree)
+    this.removeDrafts()
 
     if (this.$route.params.slug !== undefined)
       if (this.$route.params.slug.length > 0){
@@ -237,6 +238,11 @@ export default {
       this.windowWidth = window.innerWidth
       if (this.windowWidth > 768)
         this.showPopupTree = false;
+    },
+
+    removeDrafts(){
+      console.log('Удалить все ветки(статьи), где статус != published (рекурсивно)')
+      console.log(this.treeData)
     }
 
   },

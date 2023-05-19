@@ -26,7 +26,7 @@ function logoutButton() {
         ml-auto
       "
     >
-      <li>
+      <li v-if="this.isStaff || this.isSuperUser">
         <router-link
           to="/editor"
           class="
@@ -41,7 +41,7 @@ function logoutButton() {
         </router-link>
       </li>
 
-      <li>
+      <li v-if="this.isStaff || this.isSuperUser">
         <router-link
             to="/myArticles"
             class="
@@ -56,7 +56,7 @@ function logoutButton() {
         </router-link>
       </li>
 
-      <li>
+      <li v-if="this.isSuperUser">
         <router-link
             to="/articlesToApprove"
             class="
@@ -71,7 +71,7 @@ function logoutButton() {
         </router-link>
       </li>
 
-      <li>
+      <li v-if="this.isSuperUser">
         <router-link
             to="/empowerUser"
             class="
@@ -107,7 +107,13 @@ function logoutButton() {
 
 <script>
 export default {
-  name: "NavBarUserMenu"
+  name: "NavBarUserMenu",
+  data() {
+    return {
+      isSuperUser: true,
+      isStaff: true,
+    }
+  },
 }
 </script>
 

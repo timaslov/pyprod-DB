@@ -24,7 +24,7 @@ const treeStore = useTreeStore();
       Комментарии
     </h1>
 
-    <comment-form/>
+    <comment-form :article="this.article"/>
 
     <comment
         v-for="(comment, index) in this.comments"

@@ -13,5 +13,6 @@ ARTICLE_TREE_FIELDS = {
     "tagline",
     "slug",
     "author",
+    "status",
     "updated_at",
 }

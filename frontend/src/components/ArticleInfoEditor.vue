@@ -167,6 +167,7 @@ export default {
         if(values.parent === undefined || values.parent === "" || values.parent === null)
           values.parent = ""
         console.log(values);
+        console.log(this.$route.params.slug)
 
         let response
         let token = authStore.user.access
@@ -174,8 +175,8 @@ export default {
         let config = {headers: { Authorization: `Bearer ${token}` }};
 
         try {
-          response = await axios.post(
-              "http://localhost:8001/api/web/v1/articles/", body, config)
+          response = await axios.put(
+              "http://localhost:8001/api/web/v1/articles/" + this.$route.params.slug, body, config)
         } catch(error)
         {
           switch (error.response.status){
