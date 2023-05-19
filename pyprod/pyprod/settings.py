@@ -1,5 +1,6 @@
 from urllib import parse
 from pathlib import Path
+from datetime import timedelta
 
 from .utils import get_env_variable
 
@@ -105,6 +106,10 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
     ),
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
 }
 
 # CORS
