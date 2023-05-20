@@ -2,11 +2,17 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
+from ....permissions import IsStaffOrReadOnly, IsSuperUserOrReadOnly
 from ....dal import get_core_subjects
 from ....const import ArticleStatus
-from ....models import Article, Comment
-from ....serializers import ArticleTreeSerializer, ArticleSerializer, CommentSerializer
-from ....permissions import IsStaffOrReadOnly
+from ....models import Article, Comment, Tag, Image
+from ....serializers import (
+    ArticleTreeSerializer,
+    ArticleSerializer,
+    CommentSerializer,
+    TagSerializer,
+    ImageSerializer,
+)
 
 
 class ArticleViewSet(ModelViewSet):
@@ -37,3 +43,15 @@ class CommentViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+class TagViewSet(ModelViewSet):
+    queryset = Tag.objects.all().order_by("-created_on")
+    serializer_class = TagSerializer
+    permission_classes = [IsSuperUserOrReadOnly]
+
+
+class ImageViewSet(ModelViewSet):
+    queryset = Image.objects.all().order_by("-created_on")
+    serializer_class = ImageSerializer
+    permission_classes = [IsSuperUserOrReadOnly]

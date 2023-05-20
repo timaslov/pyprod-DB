@@ -7,6 +7,8 @@ from . import views
 router = routers.SimpleRouter()
 router.register("articles", views.ArticleViewSet, basename="article")
 router.register("comments", views.CommentViewSet, basename="comment")
+router.register("tags", views.TagViewSet, basename="tag")
+router.register("images", views.ImageViewSet, basename="image")
 
 
 urlpatterns = [

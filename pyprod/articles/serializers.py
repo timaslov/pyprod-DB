@@ -1,10 +1,34 @@
 from rest_framework import serializers
 
-from .models import Article, Comment
+from .models import Article, Comment, Tag, Image
 from .const import ARTICLE_TREE_FIELDS
 
 
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = [
+            "id",
+            "name",
+            "created_on",
+        ]
+
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Image
+        fields = [
+            "id",
+            "name",
+            "url",
+            "created_on",
+        ]
+
+
 class ArticleSerializer(serializers.ModelSerializer):
+    tags = TagSerializer(many=True)
+    images = ImageSerializer(many=True)
+
     class Meta:
         model = Article
         fields = [
@@ -14,6 +38,8 @@ class ArticleSerializer(serializers.ModelSerializer):
             "content",
             "slug",
             "author",
+            "tags",
+            "images",
             "parent",
             "status",
             "created_at",
