@@ -26,8 +26,10 @@ class ImageSerializer(serializers.ModelSerializer):
 
 
 class ArticleSerializer(serializers.ModelSerializer):
-    tags = TagSerializer(many=True)
-    images = ImageSerializer(many=True)
+    tags = TagSerializer(many=True, read_only=True)
+    images = ImageSerializer(many=True, read_only=True)
+    tag_ids = serializers.ListField(write_only=True)
+    image_ids = serializers.ListField(write_only=True)
 
     class Meta:
         model = Article
@@ -44,7 +46,25 @@ class ArticleSerializer(serializers.ModelSerializer):
             "status",
             "created_at",
             "updated_at",
+            "tag_ids",
+            "image_ids",
         ]
+
+    def create(self, validated_data):
+        tags_data = validated_data.pop("tag_ids")
+        images_data = validated_data.pop("image_ids")
+        article = Article.objects.create(**validated_data)
+        article.tags.set(tags_data)
+        article.images.set(images_data)
+        return article
+
+    def update(self, instance, validated_data):
+        tags_data = validated_data.pop("tag_ids", [])
+        images_data = validated_data.pop("image_ids", [])
+        article = super().update(instance, validated_data)
+        article.tags.set(tags_data)
+        article.images.set(images_data)
+        return instance
 
 
 class ArticleTreeSerializer(serializers.ModelSerializer):
