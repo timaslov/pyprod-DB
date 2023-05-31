@@ -81,7 +81,9 @@
 
       <div class="w-4/5" v-html="this.article.content" ></div>
 
-      <button class="
+      <button
+          @click="onApprove"
+          class="
                   text-white
                   bg-green-600
                   hover:bg-green-800
@@ -98,7 +100,9 @@
         Подтвердить
       </button>
 
-      <button class="
+      <button
+          @click="onReject"
+          class="
                   text-white
                   bg-red-600
                   hover:bg-red-800
@@ -117,6 +121,9 @@
 </template>
 
 <script>
+import {useAuthStore} from "../../stores/auth.store";
+import axios from "axios";
+
 export default {
   name: "ArticleToApproveLI",
   props: {
@@ -133,6 +140,50 @@ export default {
     toggleShowButton() {
       this.articleOpened = !this.articleOpened
     },
+
+    async onApprove() {
+      const authStore = useAuthStore();
+      let response
+      let token = authStore.user.access
+      let body = {status: "published"};
+      let config = {headers: { Authorization: `Bearer ${token}` }};
+
+      try {
+        response = await axios.patch(
+            "http://localhost:8001/api/web/v1/articles/" + this.article.slug + "/", body, config)
+      } catch(error)
+      {
+        switch (error.response.status){
+          case 401:
+            throw 'Ошибка 401'
+          default:
+            throw error.response.status
+        }
+      }
+      console.log(response)
+    },
+
+    async onReject() {
+      const authStore = useAuthStore();
+      let response
+      let token = authStore.user.access
+      let body = {status: "deleted"};
+      let config = {headers: { Authorization: `Bearer ${token}` }};
+
+      try {
+        response = await axios.patch(
+            "http://localhost:8001/api/web/v1/articles/" + this.article.slug + "/", body, config)
+      } catch(error)
+      {
+        switch (error.response.status){
+          case 401:
+            throw 'Ошибка 401'
+          default:
+            throw error.response.status
+        }
+      }
+      console.log(response)
+    }
   },
 }
 </script>

@@ -110,10 +110,17 @@ export default {
   name: "NavBarUserMenu",
   data() {
     return {
-      isSuperUser: true,
-      isStaff: true,
+      isSuperUser: false,
+      isStaff: false,
     }
   },
+
+  async created() {
+    const authStore = useAuthStore();
+    console.log(authStore.userInfo)
+    this.isStaff = authStore.userInfo.is_staff
+    this.isSuperUser = authStore.userInfo.is_superuser
+  }
 }
 </script>
 

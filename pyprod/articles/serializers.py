@@ -26,8 +26,8 @@ class ImageSerializer(serializers.ModelSerializer):
 
 
 class ArticleSerializer(serializers.ModelSerializer):
-    tags = TagSerializer(many=True)
-    images = ImageSerializer(many=True)
+    tags = TagSerializer(many=True, required=False)
+    images = ImageSerializer(many=True, required=False)
 
     class Meta:
         model = Article

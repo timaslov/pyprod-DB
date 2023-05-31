@@ -1,5 +1,6 @@
 <template>
   <button
+    v-if="node.status === 'published'"
     class="
       rounded-lg
       border-2

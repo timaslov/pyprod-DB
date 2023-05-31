@@ -31,6 +31,7 @@
 <script>
 import ArticleToEditLI from "@/components/UserCases/ArticleToEditLI.vue";
 import axios from "axios";
+import {useAuthStore} from "../stores/auth.store";
 export default {
   name: "MyArticlesView",
   components: {ArticleToEditLI},
@@ -49,11 +50,14 @@ export default {
   },
 
   async created() {
+    const authStore = useAuthStore();
+    //console.log(authStore.userInfo)
+
     await axios
-        .get("http://127.0.0.1:8000/api/web/v1/articles/?author=" + "1")
+        .get("http://127.0.0.1:8000/api/web/v1/articles/?author=" + authStore.userInfo.id)
         .then(response => this.articles.push(...(response.data)))
 
-    console.log(this.article)
+    //console.log(this.article)
   },
 }
 </script>
