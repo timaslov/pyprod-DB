@@ -11,6 +11,7 @@ import myArticlesView from "@/views/MyArticlesView.vue";
 import articlesToApprove from "@/views/ArticlesToApprove.vue";
 import articleToApprove from "@/views/ArticleToApprove.vue";
 import empowerUser from "@/views/EmpowerUser.vue";
+import searchArticle from "../views/SearchArticle.vue";
 
 
 const routes = [
@@ -61,6 +62,10 @@ const routes = [
   {
     path: '/empowerUser',
     component: empowerUser
+  },
+  {
+    path: '/search',
+    component: searchArticle
   },
 ]
 

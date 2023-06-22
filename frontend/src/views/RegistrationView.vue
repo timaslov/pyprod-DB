@@ -52,19 +52,19 @@ async function onSubmit(values, { setErrors }) {
       <h1 class="text-center text-2xl">Регистрация</h1>
 
       <div class="grid grid-cols-2 place-items-center">
-        <label>firstname</label>
+        <label>Имя</label>
         <Field name="firstname" class="border-2" />
         <div v-if="errors.username" class="text-red-500">{{ 'Введите firstname' }}</div>
       </div>
 
       <div class="grid grid-cols-2 place-items-center">
-        <label>lastname</label>
+        <label>Фамилия</label>
         <Field name="lastname" class="border-2" />
         <div v-if="errors.username" class="text-red-500">{{ 'Введите lastname' }}</div>
       </div>
 
       <div class="grid grid-cols-2 place-items-center">
-        <label>Username</label>
+        <label>Имя польз.</label>
         <Field name="username" class="border-2" />
         <div v-if="errors.username" class="text-red-500">{{ 'Введите username' }}</div>
       </div>

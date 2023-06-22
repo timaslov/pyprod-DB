@@ -17,6 +17,16 @@
     >
       Статьи
     </h1>
+    <h1
+        v-if="articles.length === 0"
+        class="
+        text-lg
+        text-center
+      "
+    >
+      Нет статей к подтверждению
+    </h1>
+
 
     <article-to-approve-l-i
         v-for="(article, index) in this.articles"

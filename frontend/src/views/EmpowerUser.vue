@@ -45,6 +45,7 @@ const schema = Yup.object().shape({
                 "
         >Сделать модератором</button>
       </div>
+      <h1 v-if="success" class="text-lg text-green-600"> Пользователь наделен правами модератора </h1>
 
       <div v-if="errors.apiError" class="text-red-500">{{errors.apiError}}</div>
     </Form>
@@ -54,8 +55,15 @@ const schema = Yup.object().shape({
 <script>
 import axios from "axios";
 import {useAuthStore} from "../stores/auth.store";
+import router from "../router";
 export default {
   name: "EmpowerUser",
+
+  data() {
+    return {
+      success: false
+    }
+  },
 
   methods: {
     async onSubmit(values, { setErrors }) {
@@ -80,7 +88,10 @@ export default {
         }
       }
       console.log(response)
-
+      this.success = true
+      setTimeout(() => {
+        location.reload()
+      }, "1500");
     }
   }
 }

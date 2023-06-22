@@ -25,7 +25,7 @@ const schema = Yup.object().shape({
         w-[800px]
       "
     >
-      <h1 class="text-center text-2xl">Инфо о статье</h1>
+      <h1 class="text-center text-2xl">Создание / редактирование статьи</h1>
 
       <div class="grid grid-cols-3 place-items-center">
         <label>Заголовок *</label>
@@ -78,13 +78,13 @@ const schema = Yup.object().shape({
 
       <div class="grid grid-cols-3 place-items-center">
         <label>Картинка</label>
-        <select class="border-2 w-[185px]" id="pictureSelect">
-          <option v-for="picture in this.pictures" :key="picture.url" :value="picture.url">
-            {{ picture.name }}
+        <select class="border-2 w-[185px]" id="imageSelect">
+          <option v-for="image in this.images" :key="image.url" :value="image.id">
+            {{ image.name }}
           </option>
         </select>
         <button
-            @click="addPicture"
+            @click="addImage"
             type="button"
             class="
           text-white
@@ -101,6 +101,7 @@ const schema = Yup.object().shape({
         >
           Добавить
         </button>
+        <a v-for="image in this.articleData.images" :key="image.id" class="text-green-600"> {{image.name}} </a>
       </div>
 
 
@@ -110,13 +111,13 @@ const schema = Yup.object().shape({
         <div v-if="errors.slug" class="text-red-500">{{ 'Введите слаг' }}</div>
       </div>
 
-      <Field name="content" v-model="this.articleData.content">
+      <Field class="" name="content" v-model="this.articleData.content">
         <editor
-            class="w-full"
+            class=""
             api-key="no-api-key"
             id="id1"
             v-model="this.articleData.content"
-            :init="{format:'html'}"
+            :init="{format:'html', width:'790', height:'400'}"
         />
       </Field>
 
@@ -141,8 +142,9 @@ const schema = Yup.object().shape({
           my-5
         "
       >
-        Запостить
+        Отправить
       </button>
+      <label v-if="successPost || successPut" class="text-lg text-green-600">Статья успешно отправлена</label>
     </Form>
   </div>
 </template>
@@ -151,6 +153,7 @@ const schema = Yup.object().shape({
 import Editor from '@tinymce/tinymce-vue'
 import axios from "axios";
 import { useAuthStore } from '@/stores/auth.store';
+import router from "../router";
 export default {
   name: "ArticleInfoEditor",
   components: {'editor': Editor},
@@ -158,11 +161,12 @@ export default {
     return {
       urlArticles: 'http://127.0.0.1:8000/api/web/v1/articles/',
       articles: [],
-      articleData: Object,
+      articleData: {tags: [], images: []},
       isNewArticle: true,
-      pictures: [],
+      images: [],
       tags: [],
-      tagsToAdd: [],
+      successPost: false,
+      successPut: false,
     }
   },
 
@@ -191,18 +195,20 @@ export default {
 
     let response3 = await axios
         .get('http://127.0.0.1:8000/api/web/v1/images/')
-        .then(response => this.pictures.push(...(response.data)))
-    console.log(this.pictures)
+        .then(response => this.images.push(...(response.data)))
+    console.log(this.images)
 
     let response4 = await axios
         .get('http://127.0.0.1:8000/api/web/v1/tags/')
         .then(response => this.tags.push(...(response.data)))
     console.log(this.tags)
     if (response4){
-      for (let i = 0; i < this.articleData.tags.length; i++){
-        for (let j = 0; j < this.tags.length; j++){
-          if (this.articleData.tags[i].id === this.tags[j].id){
-            this.articleData.tags[i] = this.tags[j]
+      if (this.articleData.tags !== undefined) {
+        for (let i = 0; i < this.articleData.tags.length; i++) {
+          for (let j = 0; j < this.tags.length; j++) {
+            if (this.articleData.tags[i].id === this.tags[j].id) {
+              this.articleData.tags[i] = this.tags[j]
+            }
           }
         }
       }
@@ -232,9 +238,15 @@ export default {
         }
         console.log(tags_ids)
 
+        let images_ids = []
+        for(let i = 0; i < this.articleData.images.length; i++){
+          images_ids.push(this.articleData.images[i].id)
+        }
+        console.log(images_ids)
+
         let response
         let token = authStore.user.access
-        let body = {title: values.title, tagline: values.tagline, content: values.content, slug: values.slug, tag_ids: tags_ids, parent: values.parent};
+        let body = {title: values.title, tagline: values.tagline, content: values.content, slug: values.slug, tag_ids: tags_ids, image_ids: images_ids , parent: values.parent};
         let config = {headers: { Authorization: `Bearer ${token}` }};
 
         try {
@@ -249,6 +261,11 @@ export default {
               throw error.response.status
           }
         }
+        this.successPost = true
+        setTimeout(() => {
+          this.successPost = false
+          router.push('/articles')
+        }, "1000");
       }
       else {
         console.log('Update article');
@@ -263,9 +280,15 @@ export default {
         }
         console.log(tags_ids)
 
+        let images_ids = []
+        for(let i = 0; i < this.articleData.images.length; i++){
+          images_ids.push(this.articleData.images[i].id)
+        }
+        console.log(images_ids)
+
         let response
         let token = authStore.user.access
-        let body = {title: values.title, tagline: values.tagline, content: values.content, slug: values.slug, tag_ids: tags_ids, parent: values.parent};
+        let body = {title: values.title, tagline: values.tagline, content: values.content, slug: values.slug, tag_ids: tags_ids, image_ids: images_ids, parent: values.parent};
         console.log(body)
         let config = {headers: { Authorization: `Bearer ${token}` }};
 
@@ -281,13 +304,32 @@ export default {
               throw error.response.status
           }
         }
+        this.successPut = true
+        setTimeout(() => {
+          this.successPut = false
+          router.push('/articles')
+        }, "1000");
       }
     },
 
-    addPicture() {
-      let url = document.getElementById("pictureSelect").value;
-      console.log(url)
-      this.articleData.content += '<img src="' + url + '">'
+    addImage() {
+      let image_id = document.getElementById("imageSelect").value;
+
+      for (let i = 0; i < this.images.length; i++) {
+        if (image_id == this.images[i].id && !this.articleData.images.includes(this.images[i])) {
+          this.articleData.images.push(this.images[i])
+          let url = ''
+          for (let i = 0; i < this.images.length; i++){
+            if (this.images[i].id == image_id)
+              url = this.images[i].url
+          }
+          console.log(this.images)
+          console.log(url)
+          this.articleData.content += '<img src="' + url + '">'
+        }
+      }
+      console.log(this.articleData)
+
     },
 
     addTag() {
@@ -300,7 +342,7 @@ export default {
           this.articleData.tags.push(this.tags[i])
         }
       }
-      //console.log(this.articleData)
+      console.log(this.articleData)
     },
 
   },

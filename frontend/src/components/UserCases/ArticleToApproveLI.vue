@@ -161,6 +161,7 @@ export default {
         }
       }
       console.log(response)
+      location.reload()
     },
 
     async onReject() {
@@ -183,6 +184,7 @@ export default {
         }
       }
       console.log(response)
+      location.reload()
     }
   },
 }

@@ -152,20 +152,24 @@ const authStore = useAuthStore();
 
 
           <li>
-            <p
-              class="
+            <router-link
+                to="/search"
+                class="
                 block py-2 pl-3 pr-4 rounded
                 md:bg-transparent
-                md:text-gray-700
                 md:p-0
                 md:hover:bg-transparent
                 md:hover:text-amber-600
                 hover:bg-amber-600
                 hover:text-white
               "
+                :class="{
+                'md:text-amber-600 bg-amber-600 text-white' : this.curTab === 'search',
+                'md:text-gray-700' : this.curTab !== 'search',
+              }"
             >
-              {{ "Поиск" }}
-            </p>
+              Поиск
+            </router-link>
           </li>
         </ul>
       </div>

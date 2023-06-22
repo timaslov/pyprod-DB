@@ -105,6 +105,7 @@ export default {
             throw error.response.status
         }
       }
+      location.reload()
     }
   }
 }

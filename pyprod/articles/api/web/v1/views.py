@@ -13,8 +13,6 @@ from ....serializers import (
     TagSerializer,
     ImageSerializer,
 )
-import logging
-import time
 
 
 class ArticleViewSet(ModelViewSet):
@@ -30,7 +28,7 @@ class ArticleViewSet(ModelViewSet):
 
     def perform_update(self, serializer):
         status = ArticleStatus.PUBLISHED if self.request.user.is_superuser else ArticleStatus.DRAFT
-        serializer.save(author=self.request.user, status=status)
+        serializer.save(status=status)
 
     @action(detail=False)
     def index(self, request):

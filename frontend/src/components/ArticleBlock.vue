@@ -1,8 +1,20 @@
 <template>
   <div class="h-full rounded-lg">
-    <h1 class="text-xl text-center">
-      {{ this.articleData.title }}
-    </h1>
+    <div class="grid grid-cols-3 place-items-center">
+      <h1></h1>
+      <h1 class="text-xl text-center">
+        {{ this.articleData.title }}
+      </h1>
+      <h1 class="text-lg text-center">
+        ID автора: {{this.articleData.author === null ? 'null' : this.articleData.author }}
+      </h1>
+    </div>
+
+    <hr class="border-t-2 m-2">
+
+    <h1 class="text-center"> {{this.articleData.tagline}} </h1>
+
+    <hr class="border-t-2 m-2">
 
     <div v-html="this.articleData.content"></div>
   </div>

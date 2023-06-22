@@ -7,7 +7,6 @@ import axios from "axios";
 const authStore = useAuthStore();
 
 const schema = Yup.object().shape({
-  commentText: Yup.string().required('commentText is required')
 });
 
 
@@ -21,12 +20,13 @@ const schema = Yup.object().shape({
       v-slot="{errors}"
       v-if="authStore.user !== null"
   >
-    <Field v-slot="{ field }" name="commentText" class="">
-      <textarea v-bind="field" maxlength="300" class="border-2 border-gray-400 h-24 w-full"/>
+    <Field v-model="commText" v-slot="{ field }" id="commentField" name="commentText" class="">
+      <textarea id="commentTextArea" v-bind="field" maxlength="300" class="border-2 border-gray-400 h-24 w-full"/>
     </Field>
 
     <div class="flex justify-end">
-      <div v-if="errors.commentText" class="mr-5">{{ 'Введите текст комментария' }}</div>
+      <div v-if="warningNoText" class="mr-5">{{ 'Введите текст комментария' }}</div>
+      <div v-if="success" class="mr-5">{{ 'Комментарий отправлен' }}</div>
       <button
           type="submit"
           class="
@@ -65,28 +65,48 @@ export default {
     article: Object,
   },
 
+  data() {
+    return {
+      commText: "",
+      warningNoText: false,
+      success: false,
+    }
+  },
+
   methods: {
     async onSubmit(values, {setErrors}) {
-      const authStore = useAuthStore();
+      console.log(values.commentText)
+      if (values.commentText === ''){
+        this.warningNoText = true
+      }
+      else {
+        const authStore = useAuthStore()
+        let response
+        let token = authStore.user.access
+        let body = {text: values.commentText, article: this.article.id};
+        let config = {headers: {Authorization: `Bearer ${token}`}};
 
-      let response
-      let token = authStore.user.access
-      let body = {text: values.commentText, article: this.article.id};
-      let config = {headers: {Authorization: `Bearer ${token}`}};
+        //console.log(token);
+        //console.log(body);
 
-      console.log(token);
-      console.log(body);
-
-      try {
-        response = await axios.post(
-            "http://localhost:8001/api/web/v1/comments/", body, config)
-      } catch (error) {
-        switch (error.response.status) {
-          case 401:
-            throw 'Ошибка 401'
-          default:
-            throw error.response.status
+        try {
+          response = await axios.post(
+              "http://localhost:8001/api/web/v1/comments/", body, config)
+        } catch (error) {
+          switch (error.response.status) {
+            case 401:
+              throw 'Ошибка 401'
+            default:
+              throw error.response.status
+          }
         }
+        this.commText = '';
+        this.warningNoText = false;
+        this.success = true;
+        setTimeout(() => {
+          this.success = false;
+        }, "3000");
+        //location.reload();
       }
     }
   }
